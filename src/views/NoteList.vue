@@ -8,18 +8,23 @@
          <div>
             <h2>{{ note.title }}</h2>
             <ul>
-               <li :class="{completed: todo.completed}" v-for="(todo, index) in note.todos" :key="index">
+               <li :class="{completed: todo.completed}" v-for="todo in note.todos" :key="todo.id">
                   {{ todo.text }}
                </li>
             </ul>
          </div>
          <div>
             <button @click="$router.push(`/${note.id}`)">Перейти к заметке</button>
-            <button @click="deleteNote(note.id)">Удалить заметку</button>
+            <button @click="onDeleteNote(note.id)">Удалить заметку</button>
          </div>
       </div>
    </div>
-   <ModalWindow v-if="isModal" />
+   <ModalWindow v-if="isModal">
+      <template v-slot:modal-actions
+         ><button @click="confirmDelete(true)">ДА</button
+         ><button @click="confirmDelete(false)">ОТМЕНА</button></template
+      >
+   </ModalWindow>
    <p v-if="!notes.length">Список заметок пуст</p>
 </template>
 
@@ -39,15 +44,27 @@
             store.commit('addNote', inputValue);
             inputValue.value = '';
          };
-         const deleteNote = (noteId: number) => {
+         const onDeleteNote = (id: number) => {
+            store.commit('setCurrentId', id);
             isModal.value = true;
          };
+         const confirmDelete = (flag: boolean): void => {
+            if (flag) {
+               store.commit('deleteNote');
+            }
+            closeModal();
+         };
+         function closeModal() {
+            store.commit('setCurrentId', 0);
+            isModal.value = false;
+         }
          return {
             notes,
             formHandler,
-            deleteNote,
+            onDeleteNote,
             isModal,
             inputValue,
+            confirmDelete,
          };
       },
    });
@@ -76,5 +93,8 @@
       text-align: center;
       font-weight: 600;
       color: #333333;
+   }
+   .completed {
+      text-decoration: line-through;
    }
 </style>

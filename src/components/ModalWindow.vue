@@ -3,10 +3,7 @@
       <div class="modal-wrapper">
          <div class="modal">
             <h2>Удалить заметку?</h2>
-            <div>
-               <button>ДА</button>
-               <button>ОТМЕНА</button>
-            </div>
+            <slot name="modal-actions"></slot>
          </div>
       </div>
    </teleport>
