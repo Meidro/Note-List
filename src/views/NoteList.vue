@@ -1,7 +1,7 @@
 <template>
    <div class="note-list">
       <form @submit.prevent="formHandler">
-         <input type="text" v-model="inputValue" />
+         <input type="text" v-model="inputValue" placeholder="Введите название заметки" />
          <button>Создать заметку</button>
       </form>
       <div v-for="note in notes" :key="note.id">
@@ -80,10 +80,11 @@
       margin-bottom: 25px;
    }
    .note-list input {
+      font-size: 20px;
       border: 2px solid teal;
       border-radius: 5px;
       outline: none;
-      padding: 10px;
+      padding: 5px;
       margin-bottom: 15px;
    }
    .note-list form button {
