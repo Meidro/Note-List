@@ -17,6 +17,7 @@ export default createStore({
       notes: [] as Note[],
       currentNote: note as unknown as Note,
       currentId: 0,
+      isFixed: false,
    },
    mutations: {
       addNote(state, title) {
@@ -37,14 +38,24 @@ export default createStore({
       },
       updateTitle(state, value: string) {
          state.currentNote.title = value;
+         state.isFixed = false;
+      },
+      updateTextTodo(state, value: string) {
+         state.currentNote.todos = state.currentNote.todos.map((todo) => (todo.isEdit ? {...todo, text: value} : todo));
+         state.isFixed = false;
       },
       addTodo(state, value: string) {
-         state.currentNote.todos = [{id: Date.now(), text: value, completed: false}, ...state.currentNote.todos];
+         state.currentNote.todos = [
+            {id: Date.now(), text: value, completed: false, isEdit: false},
+            ...state.currentNote.todos,
+         ];
+         state.isFixed = false;
       },
       toggleChecked(state, todoId: number) {
          state.currentNote.todos = state.currentNote.todos.map((todo) =>
             todo.id === todoId ? {...todo, completed: !todo.completed} : todo
          );
+         state.isFixed = false;
       },
       undoChanges() {
          undo();
@@ -54,6 +65,21 @@ export default createStore({
       },
       saveNote(state) {
          state.notes = state.notes.map((note) => (note.id === state.currentId ? state.currentNote : note));
+      },
+      fixed(state) {
+         state.isFixed = true;
+      },
+      cancelFixed(state) {
+         state.isFixed = false;
+      },
+      toggleIsEdit(state, id: number) {
+         state.currentNote.todos = state.currentNote.todos.map((todo) =>
+            todo.id === id ? {...todo, isEdit: !todo.isEdit} : todo
+         );
+      },
+      deleteTodo(state, id: number) {
+         state.currentNote.todos = state.currentNote.todos.filter((todo) => todo.id !== id);
+         state.isFixed = false;
       },
    },
    actions: {

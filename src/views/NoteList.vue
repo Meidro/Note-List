@@ -33,7 +33,7 @@
 </template>
 
 <script lang="ts">
-   import {computed, defineComponent, ref} from 'vue';
+   import {computed, defineComponent, ref, onMounted} from 'vue';
    import store from '@/store';
    import ModalWindow from '@/components/ModalWindow.vue';
 
@@ -41,7 +41,14 @@
       name: 'NoteList',
       components: {ModalWindow},
       setup() {
+         onMounted(() => {
+            if (isFixed.value) {
+               store.commit('saveNote');
+            }
+         });
          const notes = computed(() => store.state.notes);
+
+         const isFixed = computed(() => store.state.isFixed);
          const isModal = ref(false);
          const inputValue = ref('');
          const formHandler = () => {
@@ -69,6 +76,7 @@
             isModal,
             inputValue,
             confirmDelete,
+            isFixed,
          };
       },
    });

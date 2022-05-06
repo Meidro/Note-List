@@ -13,15 +13,32 @@
       </form>
       <ul class="todo__list">
          <li v-for="todo in note.todos" :key="todo.id" class="todo__item">
-            <input :id="todo.text" type="checkbox" :checked="todo.completed" @change="onChangeCompleted(todo.id)" />
-            <label :for="todo.text"></label>
-            <span :class="{completed: todo.completed}">{{ todo.text }}</span>
+            <div v-if="!todo.isEdit" class="todo__body">
+               <input
+                  :id="todo.id.toString()"
+                  type="checkbox"
+                  :checked="todo.completed"
+                  @change="onChangeCompleted(todo.id)"
+               />
+               <label :for="todo.id.toString()"></label>
+               <span :class="{completed: todo.completed}">{{ todo.text }}</span>
+               <button @click="toggleIsEdit(todo.id)">редактировать</button>
+               <button @click="deleteTodo(todo.id)">удалить</button>
+            </div>
+            <input
+               v-else
+               type="text"
+               :value="todo.text"
+               @input="onChangeTodo"
+               v-on:keydown.enter="toggleIsEdit(todo.id)"
+               autofocus
+            />
          </li>
       </ul>
       <button @click="isModal = true">Отменить редактирование</button>
       <button @click="undo">Отменить изменения</button>
       <button @click="redo">Повторить изменения</button>
-      <button @click="save">Сохранить изменения</button>
+      <button @click="fixed">Сохранить изменения</button>
    </div>
    <ModalWindow v-if="isModal">
       <template v-slot:modal-title>
@@ -53,6 +70,9 @@
          const onTextChange = (e: Event) => {
             store.commit('updateTitle', (e.target as HTMLInputElement).value);
          };
+         const onChangeTodo = (e: Event) => {
+            store.commit('updateTextTodo', (e.target as HTMLInputElement).value);
+         };
          const formHandler = (title: string) => {
             store.commit('updateTitleNote', title);
             isEditMode.value = false;
@@ -70,14 +90,22 @@
          const redo = () => {
             store.commit('redoChanges');
          };
-         const save = () => {
-            store.commit('saveNote');
+
+         const fixed = () => {
+            store.commit('fixed');
          };
          const confirmCancelEdit = (flag: boolean) => {
             if (flag) {
-               console.log('da');
+               store.commit('cancelFixed');
+               router.push('/');
             }
             isModal.value = false;
+         };
+         const toggleIsEdit = (id: number) => {
+            store.commit('toggleIsEdit', id);
+         };
+         const deleteTodo = (id: number) => {
+            store.commit('deleteTodo', id);
          };
 
          return {
@@ -86,13 +114,17 @@
             inputValue,
             isModal,
             onTextChange,
+            onChangeTodo,
             formHandler,
             addTodo,
             onChangeCompleted,
             undo,
             redo,
-            save,
+            // save,
+            fixed,
             confirmCancelEdit,
+            toggleIsEdit,
+            deleteTodo,
          };
       },
    });
@@ -123,17 +155,23 @@
       border-radius: 5px;
       padding: 7px;
       margin-bottom: 10px;
+   }
+   .todo__body {
+      /* border: 1px solid teal;
+      border-radius: 5px;
+      padding: 7px;
+      margin-bottom: 10px; */
       display: flex;
       align-items: center;
    }
-   .todo__item input {
+   .todo__body input {
       position: absolute;
       width: 1px;
       height: 1px;
       overflow: hidden;
       clip: rect(0 0 0);
    }
-   .todo__item label {
+   .todo__body label {
       position: relative;
       width: 22px;
       height: 22px;
@@ -141,7 +179,7 @@
       border-radius: 4px;
       cursor: pointer;
    }
-   .todo__item input:checked + label::before {
+   .todo__body input:checked + label::before {
       content: '';
       position: absolute;
       top: 2px;
@@ -150,7 +188,16 @@
       height: 12px;
       background-color: teal;
    }
+   .todo__body span {
+      flex: 1 1 auto;
+      text-align: left;
+      padding-left: 10px;
+   }
+   .todo__body button {
+      margin-right: 10px;
+   }
    .completed {
       text-decoration: line-through;
+      color: #999;
    }
 </style>

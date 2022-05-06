@@ -2,6 +2,7 @@ export interface ToDo {
    id: number;
    text: string;
    completed: boolean;
+   isEdit: boolean;
 }
 
 export interface Note {
