@@ -5,7 +5,7 @@
          <button @click="isEditMode = true">Редактировать заметку</button>
       </div>
       <form v-else @submit.prevent="formHandler(note.title)">
-         <input type="text" :value="note.title" @input="onTextChange" />
+         <input type="text" :value="note.title" @input="onChangeInput" />
       </form>
       <form @submit.prevent="addTodo" class="add-todo">
          <input type="text" v-model="inputValue" placeholder="Введите текст задачи" />
@@ -35,10 +35,12 @@
             />
          </li>
       </ul>
-      <button @click="isModal = true">Отменить редактирование</button>
-      <button @click="undo">Отменить изменения</button>
-      <button @click="redo">Повторить изменения</button>
-      <button @click="fixed">Сохранить изменения</button>
+      <div class="btn-group">
+         <button @click="fixed">Сохранить изменения</button>
+         <button @click="isModal = true">Отменить редактирование</button>
+         <button @click="undo">Отменить изменения</button>
+         <button @click="redo">Повторить изменения</button>
+      </div>
    </div>
    <ModalWindow v-if="isModal">
       <template v-slot:modal-title>
@@ -67,15 +69,16 @@
          const isEditMode = ref(false);
          const isModal = ref(false);
          const inputValue = ref('');
-         const onTextChange = (e: Event) => {
-            store.commit('updateTitle', (e.target as HTMLInputElement).value);
-         };
+
          const onChangeTodo = (e: Event) => {
             store.commit('updateTextTodo', (e.target as HTMLInputElement).value);
          };
          const formHandler = (title: string) => {
             store.commit('updateTitleNote', title);
             isEditMode.value = false;
+         };
+         const onChangeInput = (e: Event) => {
+            store.commit('updateTitle', (e.target as HTMLInputElement).value);
          };
          const addTodo = () => {
             store.commit('addTodo', inputValue.value);
@@ -113,14 +116,13 @@
             isEditMode,
             inputValue,
             isModal,
-            onTextChange,
+            onChangeInput,
             onChangeTodo,
             formHandler,
             addTodo,
             onChangeCompleted,
             undo,
             redo,
-            // save,
             fixed,
             confirmCancelEdit,
             toggleIsEdit,
@@ -157,10 +159,6 @@
       margin-bottom: 10px;
    }
    .todo__body {
-      /* border: 1px solid teal;
-      border-radius: 5px;
-      padding: 7px;
-      margin-bottom: 10px; */
       display: flex;
       align-items: center;
    }
@@ -199,5 +197,9 @@
    .completed {
       text-decoration: line-through;
       color: #999;
+   }
+   .btn-group {
+      display: flex;
+      justify-content: space-between;
    }
 </style>

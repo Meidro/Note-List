@@ -2,6 +2,7 @@ import {Note, ToDo} from '@/types';
 import {createStore} from 'vuex';
 import {ref} from 'vue';
 import {useRefHistory} from '@vueuse/core';
+import createPersistedState from 'vuex-persistedstate';
 
 const note = ref({
    id: 0,
@@ -19,11 +20,11 @@ export default createStore({
       currentId: 0,
       isFixed: false,
    },
+
    mutations: {
       addNote(state, title) {
          state.notes = [{id: Date.now(), title: title.value, todos: []}, ...state.notes];
       },
-
       deleteNote(state) {
          state.notes = state.notes.filter((note) => note.id !== state.currentId);
       },
@@ -85,8 +86,11 @@ export default createStore({
    actions: {
       fetchCurrentNote({commit}, noteId: number) {
          const note = JSON.parse(JSON.stringify(this.state.notes.find((note) => note.id === noteId)));
+
          commit('setCurrentNote', note);
          commit('setCurrentId', noteId);
       },
    },
+   strict: true,
+   plugins: [createPersistedState()],
 });
