@@ -2,7 +2,7 @@
    <teleport to="body">
       <div class="modal-wrapper">
          <div class="modal">
-            <h2>Удалить заметку?</h2>
+            <slot name="modal-title"></slot>
             <slot name="modal-actions"></slot>
          </div>
       </div>
@@ -30,8 +30,11 @@
    }
    .modal {
       width: 400px;
+      background-color: #e6e7ee;
       border: 1px solid #cccccc;
       border-radius: 5px;
       box-shadow: -4px -4px 8px #ffffff, 4px 4px 8px #777777;
+      padding: 25px;
+      text-align: center;
    }
 </style>

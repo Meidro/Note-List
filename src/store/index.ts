@@ -8,7 +8,7 @@ const note = ref({
    title: '',
    todos: [] as ToDo[],
 });
-const {history, undo, redo, canUndo, canRedo, clear} = useRefHistory(note, {
+const {undo, redo} = useRefHistory(note, {
    deep: true,
 });
 
@@ -51,6 +51,9 @@ export default createStore({
       },
       redoChanges() {
          redo();
+      },
+      saveNote(state) {
+         state.notes = state.notes.map((note) => (note.id === state.currentId ? state.currentNote : note));
       },
    },
    actions: {
