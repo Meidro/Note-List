@@ -1,16 +1,16 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from 'vue-router';
-import NoteList from '@/views/NoteList.vue';
+import NotePage from '@/views/NotePage.vue';
 import NoteItem from '@/views/NoteItem.vue';
 
 const routes: Array<RouteRecordRaw> = [
    {
       path: '/',
-      name: 'NoteList',
-      component: NoteList,
+
+      component: NotePage,
    },
    {
       path: '/:id',
-      name: 'NoteItem',
+
       component: NoteItem,
    },
 ];
