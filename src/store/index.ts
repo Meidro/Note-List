@@ -74,7 +74,7 @@ export default createStore({
       },
       clearHistory() {
          clear();
-         console.log('clear');
+         console.log('clear', history.value);
       },
    },
 
