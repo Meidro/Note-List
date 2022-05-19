@@ -5,17 +5,18 @@
 </template>
 
 <script lang="ts">
-   import {defineComponent} from 'vue';
-   import store from './store';
+   import {defineComponent} from 'vue'
+   import {storage} from './storage'
+   import store from './store'
 
    export default defineComponent({
       setup() {
-         const storageNotes = localStorage.getItem('notes');
-         if (storageNotes) store.commit('setNotes', JSON.parse(storageNotes));
+         const storageNotes = storage.getNotes()
+         if (storageNotes) store.commit('setNotes', storageNotes)
 
-         return {};
+         return {}
       },
-   });
+   })
 </script>
 
 <style>

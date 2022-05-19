@@ -28,47 +28,43 @@
 </template>
 
 <script lang="ts">
-   import {defineComponent, computed, ref, watchEffect} from 'vue';
-   import store from '@/store';
-   import ModalWindow from './ModalWindow.vue';
+   import {defineComponent, computed, ref, watchEffect} from 'vue'
+   import store from '@/store'
+   import ModalWindow from './ModalWindow.vue'
+   import {storage} from '@/storage'
 
    export default defineComponent({
       emits: ['deleteNote'],
       setup() {
-         const notes = computed(() => store.state.notes);
-         const currentNote = computed(() => store.state.currentNote);
-         const isModal = ref(false);
-         const noteId = ref(0);
+         const notes = computed(() => store.state.notes)
+         const currentNote = computed(() => store.state.currentNote)
+         const isModal = ref(false)
+         const noteId = ref(0)
 
          const deleteNote = (id: number) => {
-            isModal.value = true;
-            noteId.value = id;
-         };
+            isModal.value = true
+            noteId.value = id
+         }
 
          const confirmDelete = () => {
-            store.commit('deleteNote', noteId.value);
-            isModal.value = false;
-         };
-
-         const undo = () => {
-            store.commit('undoChanges');
-         };
+            store.commit('deleteNote', noteId.value)
+            isModal.value = false
+         }
 
          watchEffect(() => {
-            localStorage.setItem('notes', JSON.stringify(notes.value));
-            localStorage.setItem('currentNote', JSON.stringify(currentNote.value));
-         });
+            storage.setNotes(notes.value)
+            storage.setCurrentNote(currentNote.value)
+         })
 
          return {
             notes,
             isModal,
             confirmDelete,
             deleteNote,
-            undo,
-         };
+         }
       },
       components: {ModalWindow},
-   });
+   })
 </script>
 
 <style scoped>

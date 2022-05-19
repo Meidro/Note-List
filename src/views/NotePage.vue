@@ -6,20 +6,16 @@
 </template>
 
 <script lang="ts">
-   import {defineComponent, onMounted} from 'vue';
-   import CreatingNote from '@/components/CreatingNote.vue';
-   import NoteList from '@/components/NoteList.vue';
-   import store from '@/store';
+   import {defineComponent} from 'vue'
+   import CreatingNote from '@/components/CreatingNote.vue'
+   import NoteList from '@/components/NoteList.vue'
 
    export default defineComponent({
       components: {CreatingNote, NoteList},
       setup() {
-         // onMounted(() => {
-         //    store.commit('resetCurrentNote');
-         // });
-         return {};
+         return {}
       },
-   });
+   })
 </script>
 
 <style scoped>
